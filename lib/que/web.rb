@@ -92,6 +92,47 @@ module Que
       redirect request.referrer, 303
     end
 
+    get "/finished" do
+      stats = Que.execute SQL[:dashboard_stats], [search]
+      pager = get_pager stats[0]["finished"]
+      finished_jobs = Que.execute SQL[:finished_jobs], [pager.page_size, pager.offset, search]
+      @list = Viewmodels::JobList.new(finished_jobs, pager)
+      erb :finished
+    end
+
+    get "/finished/:id" do |id|
+      job_id = id.to_i
+      jobs = []
+      if job_id > 0
+        jobs = Que.execute SQL[:fetch_finished_job], [job_id]
+      end
+
+      if jobs.empty?
+        redirect to "", 303
+      else
+        @job = Viewmodels::Job.new(jobs.first)
+        erb :show_finished
+      end
+    end
+
+    put "/finished/:id" do |id|
+      job_id = id.to_i
+      if job_id > 0
+        run_at = Time.now
+
+        updated_rows = Que.execute SQL[:reschedule_finished_job], [job_id, run_at]
+
+        if updated_rows.empty?
+          # Didn't get the advisory lock
+          set_flash "warning", "Job #{job_id} not rescheduled as it was already runnning"
+        else
+          set_flash "info", "Job #{job_id} rescheduled for #{run_at}"
+        end
+      end
+
+      redirect request.referrer, 303
+    end
+
     def get_pager(record_count)
       page = (params[:page] || 1).to_i
       Pager.new(page, PAGE_SIZE, record_count)

@@ -3,7 +3,8 @@ Que::Web::SQL = {
     SELECT count(*)                    AS total,
            count(locks.job_id)         AS running,
            coalesce(sum((error_count > 0 AND locks.job_id IS NULL)::int), 0) AS failing,
-           coalesce(sum((error_count = 0 AND locks.job_id IS NULL)::int), 0) AS scheduled
+           coalesce(sum((error_count = 0 AND locks.job_id IS NULL)::int), 0) AS scheduled,
+           ( select count(*) from que_history ) as finished
     FROM que_jobs
     LEFT JOIN (
       SELECT (classid::bigint << 32) + objid::bigint AS job_id
@@ -59,4 +60,26 @@ Que::Web::SQL = {
     WHERE job_id = $1::bigint
     LIMIT 1
   SQL
+  finished_jobs: <<-SQL.freeze,
+    SELECT que_history.*
+    FROM que_history
+    WHERE job_class LIKE ($3)
+    ORDER BY run_at
+    LIMIT $1::int
+    OFFSET $2::int
+  SQL
+  fetch_finished_job: <<-SQL.freeze,
+    SELECT *
+    FROM que_history
+    WHERE job_id = $1::bigint
+    LIMIT 1
+  SQL
+  reschedule_finished_job: <<-SQL.freeze,
+    INSERT INTO que_jobs (queue, priority, run_at, job_class, args, data)
+    SELECT queue, priority, $2::timestamptz, job_class, args, data
+    FROM que_history
+    WHERE job_id = $1::bigint
+    RETURNING job_id
+  SQL
+
 }.freeze
