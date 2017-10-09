@@ -133,6 +133,16 @@ module Que
       redirect request.referrer, 303
     end
 
+    get "/schedules" do
+      stats = Que.execute SQL[:dashboard_stats], [search]
+      pager = get_pager stats[0]["schedules"]
+      schedules = Que.execute SQL[:schedules], [pager.page_size, pager.offset, search]
+
+      @list = Viewmodels::ScheduleList.new(schedules, pager)
+      erb :schedules
+    end
+
+
     def get_pager(record_count)
       page = (params[:page] || 1).to_i
       Pager.new(page, PAGE_SIZE, record_count)

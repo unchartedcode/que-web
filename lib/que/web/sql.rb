@@ -4,7 +4,8 @@ Que::Web::SQL = {
            count(locks.job_id)         AS running,
            coalesce(sum((error_count > 0 AND locks.job_id IS NULL)::int), 0) AS failing,
            coalesce(sum((error_count = 0 AND locks.job_id IS NULL)::int), 0) AS scheduled,
-           ( select count(*) from que_history ) as finished
+           ( select count(*) from que_history ) as finished,
+           ( select count(*) from que_scheduler ) as schedules
     FROM que_jobs
     LEFT JOIN (
       SELECT (classid::bigint << 32) + objid::bigint AS job_id
@@ -12,7 +13,7 @@ Que::Web::SQL = {
       WHERE locktype = 'advisory'
     ) locks USING (job_id)
     WHERE
-      job_class LIKE ($1)
+      job_class ILIKE ($1)
   SQL
   failing_jobs: <<-SQL.freeze,
     SELECT que_jobs.*
@@ -22,7 +23,7 @@ Que::Web::SQL = {
       FROM pg_locks
       WHERE locktype = 'advisory'
     ) locks USING (job_id)
-    WHERE locks.job_id IS NULL AND error_count > 0 AND job_class LIKE ($3)
+    WHERE locks.job_id IS NULL AND error_count > 0 AND job_class ILIKE ($3)
     ORDER BY run_at
     LIMIT $1::int
     OFFSET $2::int
@@ -35,7 +36,7 @@ Que::Web::SQL = {
       FROM pg_locks
       WHERE locktype = 'advisory'
     ) locks USING (job_id)
-    WHERE locks.job_id IS NULL AND error_count = 0 AND job_class LIKE ($3)
+    WHERE locks.job_id IS NULL AND error_count = 0 AND job_class ILIKE ($3)
     ORDER BY run_at
     LIMIT $1::int
     OFFSET $2::int
@@ -63,7 +64,7 @@ Que::Web::SQL = {
   finished_jobs: <<-SQL.freeze,
     SELECT que_history.*
     FROM que_history
-    WHERE job_class LIKE ($3)
+    WHERE job_class ILIKE ($3)
     ORDER BY run_at
     LIMIT $1::int
     OFFSET $2::int
@@ -81,5 +82,12 @@ Que::Web::SQL = {
     WHERE job_id = $1::bigint
     RETURNING job_id
   SQL
-
+  schedules: <<-SQL.freeze,
+    SELECT que_scheduler.*
+    FROM que_scheduler
+    WHERE job_class ILIKE ($3) or name ILIKE ($3)
+    ORDER BY name
+    LIMIT $1::int
+    OFFSET $2::int
+  SQL
 }.freeze

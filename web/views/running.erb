@@ -13,6 +13,7 @@
         <tr>
           <th>Started</th>
           <th>Job</th>
+          <th>Scheduler</th>
           <th>Queue</th>
           <th>Args</th>
         </tr>
@@ -22,6 +23,7 @@
           <tr>
             <td><%== relative_time job.pg_state_changed_at %></td>
             <td><%= job.job_class %></td>
+            <td><%= job.data['scheduler'].try(:[], 'name') %></td>
             <td><%= job.queue %></td>
             <td><pre><%= job.args.map(&:inspect).join(', ') %></pre></td>
           </tr>

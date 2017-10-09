@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="small-12 medium-8 columns">
+    <h1><%= @list.total %> Scheduled Job<%= @list.total == 1 ? "" : "s" %></h1>
+  </div>
+  <div class="small-12 medium-4 columns">
+    <%== erb :_search %>
+  </div>
+</div>
+<div class="row">
+  <div class="small-12 columns">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Job</th>
+          <th>Args</th>
+          <th>Schedule</th>
+          <th>Enabled</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @list.page_jobs.each do |job| %>
+          <tr>
+            <td><%= job.name %></td>
+            <td><%= job.description %></td>
+            <td><%= job.job_class %></td>
+            <td><%= job.args %></td>
+            <td><%= job.expression %></td>
+            <td><%= job.enabled %></td>
+            <td>
+              
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="row">
+  <div class="small-12 columns">
+    <%== erb :_pager %>
+  </div>
+</div>

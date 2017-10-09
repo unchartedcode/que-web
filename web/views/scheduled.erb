@@ -13,6 +13,7 @@
         <tr>
           <th>Run At</th>
           <th>Job</th>
+          <th>Scheduler</th>
           <th>Queue</th>
           <th>Args</th>
           <th></th>
@@ -27,6 +28,7 @@
               <%== erb :_past_due, locals: {job: job}%>
             </td>
             <td><%= job.job_class %></td>
+            <td><%= job.data['scheduler'].try(:[], 'name') %></td>
             <td><%= job.queue %></td>
             <td><pre><%= format_args job %></pre></td>
             <td>
