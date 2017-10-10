@@ -55,6 +55,26 @@ Que::Web::SQL = {
     AND pg_try_advisory_lock($1::bigint)
     RETURNING job_id
   SQL
+  reschedule_scheduled_job: <<-SQL.freeze,
+    WITH upsert AS (
+      UPDATE que_jobs
+      SET run_at = $2::timestamptz
+      WHERE data->'scheduler'->>'name' = $1::text
+      AND pg_try_advisory_lock(que_jobs.job_id)
+      RETURNING job_id
+    )
+    INSERT INTO que_jobs (queue, priority, run_at, job_class, args, data)
+    SELECT '' as queue
+         , 100 as priority
+         , $2::timestamptz as run_at
+         , que_scheduler.job_class
+         , que_scheduler.args
+         , jsonb_build_object('scheduler', jsonb_build_object('name', que_scheduler.name))
+    FROM que_scheduler
+    WHERE name = $1
+    AND NOT EXISTS (SELECT * FROM upsert)
+    RETURNING job_id
+  SQL
   fetch_job: <<-SQL.freeze,
     SELECT *
     FROM que_jobs
@@ -65,7 +85,7 @@ Que::Web::SQL = {
     SELECT que_history.*
     FROM que_history
     WHERE job_class ILIKE ($3)
-    ORDER BY run_at
+    ORDER BY run_at DESC
     LIMIT $1::int
     OFFSET $2::int
   SQL
@@ -89,5 +109,17 @@ Que::Web::SQL = {
     ORDER BY name
     LIMIT $1::int
     OFFSET $2::int
+  SQL
+  fetch_schedule: <<-SQL.freeze,
+    SELECT *
+    FROM que_scheduler
+    WHERE name = $1::text
+    LIMIT 1
+  SQL
+  modify_schedule: <<-SQL.freeze,
+    UPDATE que_scheduler
+    SET enabled = $2::boolean
+    WHERE name = $1::text
+    RETURNING name
   SQL
 }.freeze

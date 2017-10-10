@@ -142,6 +142,42 @@ module Que
       erb :schedules
     end
 
+    get "/schedules/:name" do |name|
+      schedules = Que.execute SQL[:fetch_schedule], [name]
+
+      if schedules.empty?
+        redirect to "", 303
+      else
+        @schedule = Viewmodels::Schedule.new(schedules.first)
+        erb :show_schedule
+      end
+    end
+
+    post "/schedules/:name" do |name|
+      if !name.nil? and name != ''
+        run_at = Time.now
+        Que.execute SQL[:reschedule_scheduled_job], [name, run_at]
+        set_flash "info", "Job for schedule #{name} was pushed to the front of the queue"
+      end
+
+      redirect request.referrer, 303
+    end
+
+    put "/schedules/:name" do |name|
+      if !name.nil? and name != ''
+        enabled = params['enabled'] == 'true'
+        updated_rows = Que.execute SQL[:modify_schedule], [name, enabled]
+
+        if updated_rows.empty?
+          # Didn't get the advisory lock
+          set_flash "warning", "Schedule #{name} was not #{enabled ? 'enabled' : 'disabled'}"
+        else
+          set_flash "info", "Schedule #{name} was #{enabled ? 'enabled' : 'disabled'}"
+        end
+      end
+
+      redirect request.referrer, 303
+    end
 
     def get_pager(record_count)
       page = (params[:page] || 1).to_i

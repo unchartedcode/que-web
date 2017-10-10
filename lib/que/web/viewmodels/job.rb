@@ -3,7 +3,7 @@ module Que::Web::Viewmodels
     :args, :error_count, :job_class, :job_id, :last_error,
     :pg_backend_pid, :pg_last_query, :pg_last_query_started_at, :pg_state,
     :pg_state_changed_at, :pg_transaction_started_at, :pg_waiting_on_lock,
-    :priority, :queue, :run_at, :data)
+    :priority, :queue, :run_at, :data, :status)
 
     def initialize(job)
       members.each do |m|
@@ -28,7 +28,14 @@ module Que::Web::Viewmodels
     end
 
     def duration
-      data['status']['completed_at'] - data['status']['started_at']
+      completed_at = data['status'].try(:[], 'completed_at')
+      started_at = data['status'].try(:[], 'started_at')
+
+      if completed_at.nil? || started_at.nil?
+        return nil
+      end
+
+      completed_at - started_at
     end
   end
 end

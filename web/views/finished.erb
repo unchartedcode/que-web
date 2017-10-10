@@ -13,10 +13,11 @@
         <tr>
           <th>Ran At</th>
           <th>Time</th>
-          <th>Failures</th>
+          <th>Status</th>
           <th>Job</th>
           <th>Queue</th>
           <th>Args</th>
+          <th>Failures</th>
           <th>Error</th>
           <th></th>
         </tr>
@@ -28,13 +29,12 @@
               <%== relative_time job.run_at %></a>
               <%== erb :_past_due, locals: {job: job} %>
             </td>
-            <td>
-              <%= job.duration %>s
-            </td>
-            <td><%= job.error_count %></td>
+            <td><% if job.duration %><%= job.duration %>s<% end %></td>
+            <td><%= job.status %></td>
             <td><%= job.job_class %></td>
             <td><%= job.queue %></td>
             <td><pre><%= format_args job %></pre></td>
+            <td><%= job.error_count %></td>
             <td><%= format_error job %></pre></td>
             <td>
               <form action="<%= link_to "finished/#{job.job_id}" %>" method="post">

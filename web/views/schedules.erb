@@ -21,16 +21,36 @@
         </tr>
       </thead>
       <tbody>
-        <% @list.page_jobs.each do |job| %>
+        <% @list.page_jobs.each do |schedule| %>
           <tr>
-            <td><%= job.name %></td>
-            <td><%= job.description %></td>
-            <td><%= job.job_class %></td>
-            <td><%= job.args %></td>
-            <td><%= job.expression %></td>
-            <td><%= job.enabled %></td>
             <td>
-              
+              <a href="<%= link_to "schedules/#{schedule.name}" %>">
+                <%= schedule.name %>
+              </a>
+            </td>
+            <td><%= schedule.description %></td>
+            <td><%= schedule.job_class %></td>
+            <td><%= schedule.args %></td>
+            <td><%= schedule.expression %></td>
+            <td><%= schedule.enabled %></td>
+            <td>
+              <form class="form-inline" action="<%= link_to "/schedules/#{schedule.name}" %>" method="post">
+                <input type="hidden" name="_method" value="post" />
+                <button class="plain"><i class="fa fa-play"></i></button>
+              </form>
+              <% if schedule.enabled %>
+                <form class="form-inline" action="<%= link_to "/schedules/#{schedule.name}" %>" method="post">
+                  <input type="hidden" name="_method" value="put" />
+                  <input type="hidden" name="enabled" value="false" />
+                  <button class="plain"><i class="fa fa-circle"></i></button>
+                </form>
+              <% else %>
+                <form class="form-inline" action="<%= link_to "/schedules/#{schedule.name}" %>" method="post">
+                  <input type="hidden" name="_method" value="put" />
+                  <input type="hidden" name="enabled" value="true" />
+                  <button class="plain"><i class="fa fa-circle-thin"></i></button>
+                </form>
+              <% end %>
             </td>
           </tr>
         <% end %>
