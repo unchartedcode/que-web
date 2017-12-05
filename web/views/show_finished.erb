@@ -23,7 +23,6 @@
           <th>Run At</th>
           <td>
             <%== relative_time @job.run_at %>
-            <%== erb :_past_due, locals: {job: @job} %>
           </td>
         </tr>
         <tr>

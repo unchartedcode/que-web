@@ -27,7 +27,6 @@
           <tr>
             <td><a href="<%= link_to "finished/#{job.job_id}" %>">
               <%== relative_time job.run_at %></a>
-              <%== erb :_past_due, locals: {job: job} %>
             </td>
             <td><% if job.duration %><%= job.duration %>s<% end %></td>
             <td><%= job.status %></td>
