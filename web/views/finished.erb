@@ -30,7 +30,7 @@
             </td>
             <td><% if job.duration %><%= job.duration %>s<% end %></td>
             <td><%= job.status %></td>
-            <td><%= job.job_class %></td>
+            <td><a href="<%= root_path + current_path %>?<%= qparams(job_class: job.job_class) %>"><%= job.job_class %></a></td>
             <td><%= job.queue %></td>
             <td><pre><%= format_args job %></pre></td>
             <td><%= job.error_count %></td>

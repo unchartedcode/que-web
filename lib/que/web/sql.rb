@@ -84,7 +84,8 @@ Que::Web::SQL = {
   finished_jobs: <<-SQL.freeze,
     SELECT que_history.*
     FROM que_history
-    WHERE job_class ILIKE ($3)
+    WHERE ($4::text IS NULL OR ($4::text IS NOT NULL AND job_class = $4::text))
+    AND job_class ILIKE ($3)
     ORDER BY run_at DESC
     LIMIT $1::int
     OFFSET $2::int
