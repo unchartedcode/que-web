@@ -13,6 +13,26 @@ module Que
     set :views, proc { File.expand_path("views", root) }
     set :erb, :escape_html => true
 
+    helpers do
+      def current_path
+        @current_path ||= request.path_info.gsub(/^\//,'')
+      end
+
+      SAFE_QPARAMS = %w(page poll)
+
+      # Merge options with current params, filter safe params, and stringify to query string
+      def qparams(options)
+        # stringify
+        options.keys.each do |key|
+          options[key.to_s] = options.delete(key)
+        end
+
+        params.merge(options).map do |key, value|
+          SAFE_QPARAMS.include?(key) ? "#{key}=#{CGI.escape(value.to_s)}" : next
+        end.compact.join("&")
+      end
+    end
+
     get "/" do
       stats = Que.execute SQL[:dashboard_stats], [search]
       @dashboard = Viewmodels::Dashboard.new(stats[0])

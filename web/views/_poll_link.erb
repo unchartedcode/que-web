@@ -1,0 +1,20 @@
+<% if current_path != '' %>
+  <% if params[:poll] %>
+    <script>
+      setInterval(function() {
+        $.ajax({
+          url: '<%= root_path + current_path %>',
+          dataType: 'html'
+        }).done(function(data) {
+          var $data = $(data);
+          var $page = $data.filter('#page');
+          $('#page').replaceWith($page);
+          $(".timeago").timeago();
+        });
+      }, parseInt(localStorage.timeInterval) || 2000);
+    </script>
+    <li><a id="live-poll" class="button active" href="<%= root_path + current_path %>">Stop Polling</a></li>
+  <% else %>
+    <li><a id="live-poll" class="button" href="<%= root_path + current_path %>?<%= qparams(poll: true) %>">Live Poll</a></li>
+  <% end %>
+<% end %>

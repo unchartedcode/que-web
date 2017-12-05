@@ -9,7 +9,9 @@
 <body>
   <%== erb :_navbar %>
   <%== erb :_flash %>
-  <%== yield %>
+  <div id="page">
+    <%== yield %>
+  </div>
   <script src="<%= root_path %>js/jquery.min.js"></script>
   <script src="<%= root_path %>js/jquery.timeago.min.js"></script>
   <script>
