@@ -12,7 +12,6 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Description</th>
           <th>Job</th>
           <th>Args</th>
           <th>Schedule</th>
@@ -27,8 +26,10 @@
               <a href="<%= link_to "schedules/#{schedule.name}" %>">
                 <%= schedule.name %>
               </a>
+              <% unless schedule.description.nil? %>
+                <div style="font-size: 80%"><%= schedule.description %></div>
+              <% end %>
             </td>
-            <td><%= schedule.description %></td>
             <td><%= schedule.job_class %></td>
             <td><%= schedule.args %></td>
             <td><%= schedule.expression %></td>
