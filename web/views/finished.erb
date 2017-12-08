@@ -27,12 +27,12 @@
         <% @list.page_jobs.each do |job| %>
           <tr>
             <td>
-              <a href="<%= link_to "jobs/#{job.job_id}" %>"><%= job.job_id %></a>
+              <a href="<%= link_to "finished/#{job.job_id}" %>"><%= job.job_id %></a>
             </td>
             <td>
               <%== relative_time job.run_at %>
             </td>
-            <td><% if job.duration %><%= job.duration %>s<% end %></td>
+            <td><% if job.duration %><%= job.duration_friendly %><% end %></td>
             <td><%= job.status %></td>
             <td><a href="<%= root_path + current_path %>?<%= qparams(job_class: job.job_class) %>"><%= job.job_class %></a></td>
             <td><%= job.queue %></td>
