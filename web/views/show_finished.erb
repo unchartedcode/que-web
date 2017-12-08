@@ -85,7 +85,7 @@
 </div>
 <div class="row">
   <div class="small-12 columns">
-    <form class="form-inline" action="<%= link_to "/history/#{@job.job_id}" %>" method="post">
+    <form class="form-inline" action="<%= link_to "/finished/#{@job.job_id}" %>" method="post">
       <input type="hidden" name="_method" value="put" />
       <button><i class="fa fa-play-circle"></i> Run Again</button>
     </form>
