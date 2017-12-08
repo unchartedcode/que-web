@@ -34,13 +34,13 @@ module Que
       erb :failing
     end
 
-    get "/scheduled" do
+    get "/queued" do
       stats = Que.execute SQL[:dashboard_stats], [search]
-      pager = get_pager stats[0]["scheduled"]
+      pager = get_pager stats[0]["queued"]
       scheduled_jobs = Que.execute SQL[:scheduled_jobs], [pager.page_size, pager.offset, search]
 
       @list = Viewmodels::JobList.new(scheduled_jobs, pager)
-      erb :scheduled
+      erb :queued
     end
 
     get "/jobs/:id" do |id|
@@ -229,6 +229,10 @@ module Que
         return unless job.last_error
         line = job.last_error.lines.first
         truncate line, 30
+      end
+
+      def format_number(number)
+        "#{number.to_s.gsub(/\d(?=(...)+$)/, '\0,')}"
       end
 
       def relative_time(time)

@@ -37,5 +37,40 @@ module Que::Web::Viewmodels
 
       completed_at - started_at
     end
+
+    def duration_friendly
+      s = duration
+
+      if s.nil?
+        return ""
+      end
+
+      # d = days, h = hours, m = minutes, s = seconds
+      m = (s / 60).floor
+      s = s % 60
+      h = (m / 60).floor
+      m = m % 60
+      d = (h / 24).floor
+      h = h % 24
+
+      output = "#{s} second#{s == 1 ? '' : 's'}" if (s > 0)
+      output = "#{m} minute#{m == 1 ? '' : 's'}, #{s} second#{s == 1 ? '' : 's'}" if (m > 0)
+      output = "#{h} hour#{h == 1 ? '' : 's'}, #{m} minute#{m == 1 ? '' : 's'}, #{s} second#{s == 1 ? '' : 's'}" if (h > 0)
+      output = "#{d} day#{d == 1 ? '' : 's'}, #{h} hour#{h == 1 ? '' : 's'}, #{m} minute#{m == 1 ? '' : 's'}, #{s} second#{s == 1 ? '' : 's'}" if (d > 0)
+
+      output
+    end
+
+    def label
+      if status == 'complete'
+        return 'success'
+      end
+
+      if ['error', 'dead'].include?(status)
+        return 'alert'
+      end
+
+      ''
+    end
   end
 end

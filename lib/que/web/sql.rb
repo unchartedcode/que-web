@@ -3,9 +3,9 @@ Que::Web::SQL = {
     SELECT count(*)                    AS total,
            count(locks.job_id)         AS running,
            coalesce(sum((error_count > 0 AND locks.job_id IS NULL)::int), 0) AS failing,
-           coalesce(sum((error_count = 0 AND locks.job_id IS NULL)::int), 0) AS scheduled,
-           ( select count(*) from que_history ) as finished,
-           ( select count(*) from que_scheduler ) as schedules
+           coalesce(sum((error_count = 0 AND locks.job_id IS NULL)::int), 0) AS queued,
+           ( select n_live_tup from pg_stat_all_tables where schemaname = 'public' and relname = 'que_history' ) as finished,
+           ( select n_live_tup from pg_stat_all_tables where schemaname = 'public' and relname = 'que_scheduler' ) as schedules
     FROM que_jobs
     LEFT JOIN (
       SELECT (classid::bigint << 32) + objid::bigint AS job_id

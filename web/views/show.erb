@@ -27,17 +27,59 @@
           </td>
         </tr>
         <tr>
-          <th>Failures</th>
-          <td><pre><%= @job.error_count %></pre></td>
-        </tr>
-        <tr>
           <th>Args</th>
-          <td><pre><%= @job.args.map(&:inspect).join(', ') %></pre></td>
+          <td>
+            <ul class="simple">
+              <% @job.args.map(&:inspect).each do |arg| %>
+                <li><pre><%= arg %></pre></li>
+              <% end %>
+            </ul>
+          </td>
         </tr>
-        <tr>
-          <th>Last Error</th>
-          <td><pre><%= @job.last_error %></pre></td>
-        </tr>
+        <% if @job.data['scheduler'].present? %>
+          <tr>
+            <th>Scheduler</th>
+            <td>
+              <ul class="simple">
+                <li><span class="label">Name</span> <a href="<%= link_to "schedules/#{@job.data['scheduler']['name']}" %>"><%= @job.data['scheduler']['name'] %></a></li>
+                <li><span class="label">Prior Execution</span> <%== relative_time Time.at(@job.data['scheduler']['last_executed_at']) %></li>
+              </ul>
+            </td>
+          </tr>
+        <% end %>
+        <% if @job.data['status'].present? %>
+          <tr>
+            <th>Status</th>
+            <td>
+              <span class="<%= @job.label %> label"><%= @job.status %></span>
+              <ul class="simple">
+                <% if @job.duration %>
+                  <li><span class="label">Duration</span> <%= @job.duration_friendly %></li>
+                <% end %>
+                <li><span class="label">Started</span> <%= Time.at(@job.data['status']['started_at']) %></li>
+                <% if @job.data['status']['completed_at'] %>
+                  <li><span class="label">Completed</span> <%= Time.at(@job.data['status']['completed_at']) %></li>
+                <% end %>
+                <% if @job.data['status']['died_at'] %>
+                  <li><span class="label">Died</span> <%= Time.at(@job.data['status']['died_at']) %></li>
+                <% end %>
+                <% if @job.data['status']['errored_at'] %>
+                  <li><span class="label">Errored</span> <%= Time.at(@job.data['status']['errored_at']) %></li>
+                <% end %>
+              </ul>
+            </td>
+          </tr>
+        <% end %>
+        <% if @job.error_count > 0 %>
+          <tr>
+            <th>Failures</th>
+            <td><pre><%= @job.error_count %></pre></td>
+          </tr>
+          <tr>
+            <th>Last Error</th>
+            <td><pre><%= @job.last_error %></pre></td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>

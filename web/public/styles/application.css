@@ -83,3 +83,8 @@ i.subtle {
 .search {
   margin-top: 15px;
 }
+
+ul.simple {
+  list-style-type: none;
+  margin: 0;
+}

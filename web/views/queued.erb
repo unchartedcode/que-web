@@ -1,6 +1,6 @@
 <div class="row">
   <div class="small-12 medium-8 columns">
-    <h1><%= @list.total %> Job<%= @list.total == 1 ? "" : "s" %> Coming Up</h1>
+    <h1><%= @list.total %> Queued Job<%= @list.total == 1 ? "" : "s" %></h1>
   </div>
   <div class="small-12 medium-4 columns">
     <%== erb :_search %>
@@ -11,6 +11,7 @@
     <table>
       <thead>
         <tr>
+          <th>Id</th>
           <th>Run At</th>
           <th>Job</th>
           <th>Scheduler</th>
@@ -24,7 +25,10 @@
         <% @list.page_jobs.each do |job| %>
           <tr>
             <td>
-              <a href="<%= link_to "jobs/#{job.job_id}" %>"><%== relative_time job.run_at %></a>
+              <a href="<%= link_to "jobs/#{job.job_id}" %>"><%= job.job_id %></a>
+            </td>
+            <td>
+              <%== relative_time job.run_at %>
               <%== erb :_past_due, locals: {job: job}%>
             </td>
             <td><%= job.job_class %></td>

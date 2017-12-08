@@ -11,6 +11,7 @@
     <table>
       <thead>
         <tr>
+          <th>Id</th>
           <th>Last Update</th>
           <th>Job</th>
           <th>Scheduler</th>
@@ -21,9 +22,17 @@
       <tbody>
         <% @list.page_jobs.each do |job| %>
           <tr>
+            <td>
+              <a href="<%= link_to "jobs/#{job.job_id}" %>"><%= job.job_id %></a>
+            </td>
             <td><%== relative_time job.pg_state_changed_at %></td>
             <td><%= job.job_class %></td>
-            <td><%= job.data['scheduler'].try(:[], 'name') %></td>
+            <td>
+              <% if job.data['scheduler'].present? %>
+                <%= job.data['scheduler'].try(:[], 'name') %>
+                Last Executed: <%= Time.at(job.data['scheduler'].try(:[], 'last_executed_at')) %>
+              <% end %>
+            </td>
             <td><%= job.queue %></td>
             <td><pre><%= job.args.map(&:inspect).join(', ') %></pre></td>
           </tr>

@@ -20,9 +20,9 @@
   <a class="small-12 large-4 columns" href="<%= link_to 'scheduled' %>">
     <div class="dashboard-stat scheduled">
       <div class="cell">
-        <h2>Scheduled<h2>
+        <h2>Queued<h2>
         <span class="dashboard-value">
-          <%= @dashboard.scheduled %>
+          <%= @dashboard.queued %>
         </span>
       </div>
     </div>
@@ -44,9 +44,9 @@
       <div class="cell">
         <h2>Finished<h2>
         <span class="dashboard-value">
-          <%= @dashboard.finished %>
+          <%= format_number @dashboard.finished %>
         </span>
       </div>
     </div>
-  </a>  
+  </a>
 </div>
