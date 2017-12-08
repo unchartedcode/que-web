@@ -31,7 +31,7 @@
               <%= job.job_class %>
               <% if job.data['scheduler'].present? %>
                 <a href="<%= link_to "schedules/#{job.data['scheduler'].try(:[], 'name')}" %>">
-                  <div style="font-size: 80%"><%= <%= job.data['scheduler'].try(:[], 'name') %> %></div>
+                  <div style="font-size: 80%"><%= job.data['scheduler'].try(:[], 'name') %></div>
                 </a>
               <% end %>
             </td>
