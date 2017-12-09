@@ -27,7 +27,7 @@
             <td>
               <% if job.duration(Time.now.to_i) %><%= job.duration_friendly(Time.now.to_i) %>, <% end %>
               <div style="font-size: 80%">
-                <span class="label">Last Update</span><%== relative_time job.pg_state_changed_at %>
+                Updated <%== relative_time job.pg_state_changed_at %>
               </div>
             </td>
             <td>
