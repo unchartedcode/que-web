@@ -25,7 +25,7 @@
               <a href="<%= link_to "jobs/#{job.job_id}" %>"><%= job.job_id %></a>
             </td>
             <td>
-              <% if job.duration(Time.now) %><%= job.duration_friendly(Time.now) %>, <% end %>
+              <% if job.duration(Time.now.to_i) %><%= job.duration_friendly(Time.now.to_i) %>, <% end %>
               <div style="font-size: 80%">
                 <span class="label">Last Update</span><%== relative_time job.pg_state_changed_at %>
               </div>
