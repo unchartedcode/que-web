@@ -27,8 +27,11 @@ module Que::Web::Viewmodels
       Time.at(data['status']['completed_at'])
     end
 
-    def duration
-      completed_at = data['status'].try(:[], 'completed_at')
+    def duration(completed_at = nil)
+      if completed_at.nil?
+        completed_at = data['status'].try(:[], 'completed_at')
+      end
+
       started_at = data['status'].try(:[], 'started_at')
 
       if completed_at.nil? || started_at.nil?
@@ -38,8 +41,8 @@ module Que::Web::Viewmodels
       completed_at - started_at
     end
 
-    def duration_friendly
-      s = duration
+    def duration_friendly(completed_at = nil)
+      s = duration(completed_at)
 
       if s.nil?
         return ""
