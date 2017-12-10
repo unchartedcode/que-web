@@ -6,12 +6,12 @@ describe Que::Web::Viewmodels::Dashboard do
       "total" => 10,
       "running" => 6,
       "failing" => 2,
-      "scheduled" => 2
+      "queued" => 2
     }
   }
   let(:subject) { Que::Web::Viewmodels::Dashboard.new(dashboard_stats) }
 
   it 'passes through values' do
-    subject.scheduled.must_equal 2
+    subject.queued.must_equal 2
   end
 end
