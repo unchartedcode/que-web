@@ -11,6 +11,14 @@ module Que::Web::Viewmodels
       end
     end
 
+    def class_name
+      if job_class == 'ActiveJob::QueueAdapters::QueAdapter::JobWrapper'
+        args['job_class']
+      else
+        job_class
+      end
+    end
+
     def past_due?(relative_to = Time.now)
       run_at < relative_to
     end
