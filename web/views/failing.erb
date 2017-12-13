@@ -33,7 +33,14 @@
               <%== erb :_past_due, locals: {job: job} %>
             </td>
             <td><%= job.error_count %></td>
-            <td><%= job.job_class %></td>
+            <td>
+              <%= job.job_class %>
+              <% if job.data['scheduler'].present? %>
+                <a href="<%= link_to "schedules/#{job.data['scheduler'].try(:[], 'name')}" %>">
+                  <div style="font-size: 80%"><%= job.data['scheduler'].try(:[], 'name') %></div>
+                </a>
+              <% end %>
+            </td>
             <td><%= job.queue %></td>
             <td><pre><%= format_args job %></pre></td>
             <td><%= format_error job %></pre></td>

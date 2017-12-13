@@ -14,7 +14,6 @@
           <th>Id</th>
           <th>Run At</th>
           <th>Job</th>
-          <th>Scheduler</th>
           <th>Queue</th>
           <th>Args</th>
           <th></th>
@@ -31,8 +30,14 @@
               <%== relative_time job.run_at %>
               <%== erb :_past_due, locals: {job: job}%>
             </td>
-            <td><%= job.job_class %></td>
-            <td><%= job.data['scheduler'].try(:[], 'name') %></td>
+            <td>
+              <%= job.job_class %>
+              <% if job.data['scheduler'].present? %>
+                <a href="<%= link_to "schedules/#{job.data['scheduler'].try(:[], 'name')}" %>">
+                  <div style="font-size: 80%"><%= job.data['scheduler'].try(:[], 'name') %></div>
+                </a>
+              <% end %>
+            </td>
             <td><%= job.queue %></td>
             <td><pre><%= format_args job %></pre></td>
             <td>
