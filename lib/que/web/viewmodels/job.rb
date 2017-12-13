@@ -13,7 +13,7 @@ module Que::Web::Viewmodels
 
     def class_name
       if job_class == 'ActiveJob::QueueAdapters::QueAdapter::JobWrapper'
-        args['job_class']
+        args.try(:[], 0).try(:[], 'job_class')
       else
         job_class
       end
