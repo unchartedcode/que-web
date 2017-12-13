@@ -11,11 +11,19 @@ module Que::Web::Viewmodels
       end
     end
 
-    def class_name
-      if job_class == 'ActiveJob::QueueAdapters::QueAdapter::JobWrapper'
-        args.try(:[], 0).try(:[], 'job_class')
+    def job_class
+      if self['job_class'] == 'ActiveJob::QueueAdapters::QueAdapter::JobWrapper'
+        self['args'].try(:[], 0).try(:[], 'job_class')
       else
-        job_class
+        self['job_class']
+      end
+    end
+
+    def args
+      if self['job_class'] == 'ActiveJob::QueueAdapters::QueAdapter::JobWrapper'
+        self['args'].try(:[], 0).try(:[], 'arguments')
+      else
+        self['args']
       end
     end
 

@@ -33,7 +33,7 @@
               <%== erb :_past_due, locals: {job: job} %>
             </td>
             <td><%= job.error_count %></td>
-            <td><%= job.class_name %></td>
+            <td><%= job.job_class %></td>
             <td><%= job.queue %></td>
             <td><pre><%= format_args job %></pre></td>
             <td><%= format_error job %></pre></td>
