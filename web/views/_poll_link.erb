@@ -11,7 +11,7 @@
           $('#page').replaceWith($page);
           $(".timeago").timeago();
         });
-      }, parseInt(localStorage.timeInterval) || 2000);
+      }, 2000);
     </script>
     <li><a id="live-poll" class="button active" href="<%= root_path + current_path %>">Stop Polling</a></li>
   <% else %>
